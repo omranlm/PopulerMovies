@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         GetMovies(currentPageId);
 
     }
@@ -37,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
         protected void onPreExecute() {
             // TODO Add progress bar
         }
-
         @Override
         protected String doInBackground(URL... urls) {
             //TODO query the movies API
@@ -64,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
                 // TODO load the movies
                 try {
                     MoviesContainer container = MoviesJSONUtiles.parseContainer(moviesResults);
-
 
 
                 } catch (JSONException e) {
