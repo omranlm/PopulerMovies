@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PopularMoviesApp</string>
+    <string name="error_message">"Error happened while retrieving data, check with the developer</string>
 </resources>

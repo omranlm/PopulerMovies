@@ -16,6 +16,7 @@ public class NetworkUtilities {
 
     final static String POPULAR_MOVIES_DB_API = "http://api.themoviedb.org/3/movie/popular?";
 
+    final public static  String MOVIES_POSTER = "http://image.tmdb.org/t/p/w185";
     // TODO (1): Remove key before submitting to Udacity
     final static String MOVIES_DB_API_KEY = "none";
 
@@ -24,7 +25,7 @@ public class NetworkUtilities {
     final static String PAGE_QUERY_PARAM = "page";
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
-        // learned this from other exercises
+        // recalled this from other Udacity exercises
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
             InputStream inputStream = urlConnection.getInputStream();
@@ -45,7 +46,7 @@ public class NetworkUtilities {
     public static URL popularMoviesURL(int currentPageId) {
         Uri builtUri = Uri.parse(POPULAR_MOVIES_DB_API).buildUpon()
                 .appendQueryParameter(API_KEY_STRING, MOVIES_DB_API_KEY)
-                .appendQueryParameter(PAGE_QUERY_PARAM,String.valueOf(currentPageId))
+                .appendQueryParameter(PAGE_QUERY_PARAM, String.valueOf(currentPageId))
                 .build();
 
         URL url = null;
