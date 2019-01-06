@@ -1,12 +1,19 @@
 package com.example.user.popularmoviesapp;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.popularmoviesapp.Utilities.MoviesContainer;
 import com.example.user.popularmoviesapp.Utilities.MoviesJSONUtiles;
@@ -17,7 +24,7 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler{
+public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler {
 
 
     private RecyclerView mRecyclerView;
@@ -26,13 +33,22 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
     private TextView mErrorMessageDisplay;
 
-    private ProgressBar mLoadingIndicator;
+    private ProgressBar pbLoadingIndicator;
 
+    private Menu mainMenu;
     int currentPageId = 1;
+    int totalPages;
 
     @Override
     public void onClick(int movieId) {
         // TODO call the details activity with movie id
+        Context context = this;
+        Class<DetailsActivity> destinationActivity = DetailsActivity.class;
+
+        Intent intent = new Intent(MainActivity.this,destinationActivity);
+        intent.putExtra(Intent.EXTRA_INDEX,movieId);
+
+        startActivity(intent);
     }
 
     @Override
@@ -45,35 +61,40 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         layoutManager.setOrientation(GridLayoutManager.VERTICAL);
         layoutManager.setReverseLayout(false);
 
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        mMoviesAdapter = new MoviesAdapter(this,this);
+        mMoviesAdapter = new MoviesAdapter(this, this);
 
         mRecyclerView.setAdapter(mMoviesAdapter);
+        pbLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
         // TODO work on paging
         GetMovies(currentPageId);
 
     }
+
     private void GetMovies(int pageId) {
 
         URL popularMoviesAPI = NetworkUtilities.popularMoviesURL(currentPageId);
+        pbLoadingIndicator.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
 
         new MoviesTask().execute(popularMoviesAPI);
 
 
     }
 
-    public class MoviesTask extends AsyncTask<URL, Void,String> {
+    public class MoviesTask extends AsyncTask<URL, Void, String> {
         @Override
         protected void onPreExecute() {
             // TODO Add progress bar
         }
+
         @Override
         protected String doInBackground(URL... urls) {
             //TODO query the movies API
@@ -95,30 +116,81 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         protected void onPostExecute(String moviesResults) {
             super.onPostExecute(moviesResults);
             //TODO add the progress bar and check for errors
-            if (moviesResults != null && !moviesResults.equals(""))
-            {
+            pbLoadingIndicator.setVisibility(View.INVISIBLE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+
+            if (moviesResults != null && !moviesResults.equals("")) {
                 // TODO load the movies
                 try {
                     MoviesContainer container = MoviesJSONUtiles.parseContainer(moviesResults);
 
+                    totalPages = container.total_pages;
                     mMoviesAdapter.setMoviesData(container);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
-            else
-            {
+            } else {
                 //TODO manage errors
             }
 
         }
     }
 
-    private void loadPopularMovies() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        mainMenu = menu;
 
-        // Load the recycler view
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.paging, menu);
+        return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.action_next) {
+            if (currentPageId == totalPages) return false;
+            currentPageId++;
+            MenuItem page = mainMenu.findItem(R.id.page);
+            page.setTitle(String.valueOf(currentPageId));
+
+            manageMenu();
+            GetMovies(currentPageId);
+            return true;
+        }
+        if (id == R.id.action_previous) {
+            if (currentPageId == 1) return false;
+            currentPageId--;
+            MenuItem page = mainMenu.findItem(R.id.page);
+            page.setTitle(String.valueOf(currentPageId));
+            manageMenu();
+            GetMovies(currentPageId);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void manageMenu() {
+        if (mainMenu != null) {
+            MenuItem previous = mainMenu.findItem(R.id.action_previous);
+            MenuItem next = mainMenu.findItem(R.id.action_next);
+
+            if (currentPageId == totalPages) {
+                next.setCheckable(false);
+                previous.setCheckable(true);
+            } else if (currentPageId <= 1) {
+
+                next.setCheckable(true);
+                previous.setCheckable(false);
+            } else {
+                next.setCheckable(true);
+                previous.setCheckable(true);
+            }
+
+        }
+    }
 }
 

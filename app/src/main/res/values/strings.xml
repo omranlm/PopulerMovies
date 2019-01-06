@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">PopularMoviesApp</string>
+    <string name="app_name">Popular Movies</string>
     <string name="error_message">"Error happened while retrieving data, check with the developer</string>
+    <string name="popularity">Popularity: </string>
+    <string name="language">Language: </string>
+    <string name="votes">Vote Counts: </string>
 </resources>

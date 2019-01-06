@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="5sp">
 
     <ImageView
         android:id="@+id/image_iv"
@@ -10,6 +11,7 @@
         android:layout_height="150sp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,22 +21,80 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
+                android:id="@+id/tv_movie_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_movie_title"
-                android:textStyle="bold"
-                />
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="2sp"
+                    android:text="@string/language"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_movie_lang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="3sp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="2sp"
+                    android:text="@string/popularity"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_popularity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="2sp"
+                    android:text="@string/votes"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_votes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_overview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp" />
 
 
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-        </LinearLayout>
-
 
     </LinearLayout>
 

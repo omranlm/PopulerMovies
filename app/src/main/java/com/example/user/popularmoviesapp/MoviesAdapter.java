@@ -69,28 +69,45 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
     public class MoviesAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         ImageView mMovieImage ;
-        TextView mTilteTextView;
+        TextView mTitleTextView;
+        TextView mLangTextView;
+        TextView mPopularityTextView;
+        TextView mVoteTextView;
+        TextView mOverviewTextView;
+
         public MoviesAdapterViewHolder (View view)
         {
             super(view);
 
             // TODO set the whole item design
             mMovieImage = (ImageView) view.findViewById(R.id.image_iv);
-            mTilteTextView = (TextView) view.findViewById(R.id.tv_movie_title);
+            mTitleTextView = (TextView) view.findViewById(R.id.tv_movie_title);
+            mPopularityTextView = (TextView) view.findViewById(R.id.tv_popularity);
+            mLangTextView = (TextView) view.findViewById(R.id.tv_movie_lang);
+            mVoteTextView = (TextView) view.findViewById(R.id.tv_votes);
+            mOverviewTextView = (TextView) view.findViewById(R.id.tv_overview);
 
             view.setOnClickListener(this);
         }
 
         @Override
-        public void onClick(View v) {
+        public void onClick(View view) {
             // TODO implement movie click
+            int clickedPosition = getAdapterPosition();
+            mClickHandler.onClick(mMovies.movieList[clickedPosition].id);
         }
 
         public void bind(Movie movie) {
-
-
             Picasso.with(_context).load(NetworkUtilities.MOVIES_POSTER + movie.poster_path).into(mMovieImage);
-            mTilteTextView.setText(movie.title);
+            mTitleTextView.setText(movie.title);
+            mLangTextView.setText(movie.original_language);
+            //if (movie.popularity != null)
+            mPopularityTextView.setText(String.valueOf(movie.popularity));
+            mVoteTextView.setText(String.valueOf(movie.vote_count));
+            if (movie.overview.length() > 200)
+                mOverviewTextView.setText(movie.overview.substring(1,200) + "...");
+            else
+                mOverviewTextView.setText(movie.overview);
 
         }
     }
