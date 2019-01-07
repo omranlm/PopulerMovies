@@ -12,11 +12,13 @@ import java.util.Scanner;
 public class NetworkUtilities {
 
 
-    final static String MOVIES_DB_API = "http://api.themoviedb.org/3/";
+    final static String MOVIE_DETAILS_DB_API = "http://api.themoviedb.org/3/movie/";
 
-    final static String POPULAR_MOVIES_DB_API = "http://api.themoviedb.org/3/movie/popular?";
+    final static String POPULAR_MOVIES_DB_API = "http://api.themoviedb.org/3/movie/";
 
     final public static  String MOVIES_POSTER = "http://image.tmdb.org/t/p/w185";
+
+    final public static  String MOVIES_POSTER_W500 = "http://image.tmdb.org/t/p/w500";
     // TODO (1): Remove key before submitting to Udacity
     final static String MOVIES_DB_API_KEY = "none";
 
@@ -43,8 +45,8 @@ public class NetworkUtilities {
         }
     }
 
-    public static URL popularMoviesURL(int currentPageId) {
-        Uri builtUri = Uri.parse(POPULAR_MOVIES_DB_API).buildUpon()
+    public static URL popularMoviesURL(String currentSort, int currentPageId) {
+        Uri builtUri = Uri.parse(POPULAR_MOVIES_DB_API+ currentSort).buildUpon()
                 .appendQueryParameter(API_KEY_STRING, MOVIES_DB_API_KEY)
                 .appendQueryParameter(PAGE_QUERY_PARAM, String.valueOf(currentPageId))
                 .build();
@@ -60,4 +62,19 @@ public class NetworkUtilities {
 
     }
 
+    public static URL MovieDetailsbyIdURL(int movieId) {
+        Uri builtUri = Uri.parse(MOVIE_DETAILS_DB_API).buildUpon()
+                .appendEncodedPath(String.valueOf(movieId))
+                .appendQueryParameter(API_KEY_STRING, MOVIES_DB_API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
 }

@@ -14,6 +14,8 @@ import com.example.user.popularmoviesapp.Utilities.MoviesContainer;
 import com.example.user.popularmoviesapp.Utilities.NetworkUtilities;
 import com.squareup.picasso.Picasso;
 
+import java.nio.charset.Charset;
+
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdapterViewHolder>{
 
     private MoviesContainer mMovies;
@@ -70,11 +72,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
     {
         ImageView mMovieImage ;
         TextView mTitleTextView;
-        TextView mLangTextView;
         TextView mPopularityTextView;
         TextView mVoteTextView;
         TextView mOverviewTextView;
+        TextView mReleaseDate;
 
+        private CharSequence DATE_FORMAT = "dd MMM yyyy";
         public MoviesAdapterViewHolder (View view)
         {
             super(view);
@@ -83,9 +86,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
             mMovieImage = (ImageView) view.findViewById(R.id.image_iv);
             mTitleTextView = (TextView) view.findViewById(R.id.tv_movie_title);
             mPopularityTextView = (TextView) view.findViewById(R.id.tv_popularity);
-            mLangTextView = (TextView) view.findViewById(R.id.tv_movie_lang);
             mVoteTextView = (TextView) view.findViewById(R.id.tv_votes);
             mOverviewTextView = (TextView) view.findViewById(R.id.tv_overview);
+            mReleaseDate = (TextView) view.findViewById(R.id.tv_release_date);
 
             view.setOnClickListener(this);
         }
@@ -100,12 +103,20 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         public void bind(Movie movie) {
             Picasso.with(_context).load(NetworkUtilities.MOVIES_POSTER + movie.poster_path).into(mMovieImage);
             mTitleTextView.setText(movie.title);
-            mLangTextView.setText(movie.original_language);
+
             //if (movie.popularity != null)
             mPopularityTextView.setText(String.valueOf(movie.popularity));
             mVoteTextView.setText(String.valueOf(movie.vote_count));
-            if (movie.overview.length() > 200)
-                mOverviewTextView.setText(movie.overview.substring(1,200) + "...");
+
+            String releaseDateString = String.valueOf(android.text.format.DateFormat.format(DATE_FORMAT,movie.release_date));
+
+            mReleaseDate.setText(releaseDateString);
+
+            if (movie.overview != null && movie.overview.length() > 200)
+            {
+                String shortOverview = movie.overview.substring(0,200) + "...";
+                mOverviewTextView.setText(shortOverview);
+            }
             else
                 mOverviewTextView.setText(movie.overview);
 

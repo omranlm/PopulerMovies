@@ -37,6 +37,12 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
     private Menu mainMenu;
     int currentPageId = 1;
+
+    final static String TOP_RATED = "top_rated";
+    final static String POPULAR = "popular";
+
+    String currentSort = POPULAR;
+
     int totalPages;
 
     @Override
@@ -73,14 +79,15 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         mRecyclerView.setAdapter(mMoviesAdapter);
         pbLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
+        currentSort = POPULAR;
         // TODO work on paging
-        GetMovies(currentPageId);
+        GetMovies(currentPageId,currentSort);
 
     }
 
-    private void GetMovies(int pageId) {
+    private void GetMovies(int pageId,String currentSort ) {
 
-        URL popularMoviesAPI = NetworkUtilities.popularMoviesURL(currentPageId);
+        URL popularMoviesAPI = NetworkUtilities.popularMoviesURL(currentSort,currentPageId);
         pbLoadingIndicator.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
 
@@ -158,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             page.setTitle(String.valueOf(currentPageId));
 
             manageMenu();
-            GetMovies(currentPageId);
+            GetMovies(currentPageId,currentSort);
             return true;
         }
         if (id == R.id.action_previous) {
@@ -167,8 +174,18 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             MenuItem page = mainMenu.findItem(R.id.page);
             page.setTitle(String.valueOf(currentPageId));
             manageMenu();
-            GetMovies(currentPageId);
+            GetMovies(currentPageId,currentSort);
             return true;
+        }
+        if (id == R.id.action_sort_by_popular)
+        {
+            currentSort = POPULAR;
+            GetMovies(currentPageId,currentSort);
+        }
+        if (id == R.id.action_sort_by_top_rated)
+        {
+            currentSort = TOP_RATED;
+            GetMovies(currentPageId,currentSort);
         }
         return super.onOptionsItemSelected(item);
     }

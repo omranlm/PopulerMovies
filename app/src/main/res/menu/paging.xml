@@ -22,4 +22,16 @@
         android:icon="@android:drawable/ic_media_next"
         android:title="next"
         app:showAsAction="always"/>
-</menu>
+
+    <item
+        android:id="@+id/action_sort_by_popular"
+        android:orderInCategory="4"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:title="@string/sort_by_popular"
+        app:showAsAction="collapseActionView"/>
+    <item
+        android:id="@+id/action_sort_by_top_rated"
+        android:orderInCategory="5"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:title="@string/sort_by_top_rated"
+        app:showAsAction="collapseActionView"/></menu>
