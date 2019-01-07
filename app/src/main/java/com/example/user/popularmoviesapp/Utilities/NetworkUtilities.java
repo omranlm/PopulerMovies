@@ -1,5 +1,8 @@
 package com.example.user.popularmoviesapp.Utilities;
 
+import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 
 import java.io.IOException;
@@ -20,7 +23,7 @@ public class NetworkUtilities {
 
     final public static  String MOVIES_POSTER_W500 = "http://image.tmdb.org/t/p/w500";
     // TODO (1): Remove key before submitting to Udacity
-    final static String MOVIES_DB_API_KEY = "none";
+    final static String MOVIES_DB_API_KEY ="none";
 
     final static String API_KEY_STRING = "api_key";
 
@@ -76,5 +79,13 @@ public class NetworkUtilities {
         }
 
         return url;
+    }
+
+    public static boolean isOnline(Activity activity) {
+        ConnectivityManager cm =
+                (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null &&
+                cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 }

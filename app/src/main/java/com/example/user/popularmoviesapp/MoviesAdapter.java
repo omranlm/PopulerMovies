@@ -82,7 +82,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         {
             super(view);
 
-            // TODO set the whole item design
+            // DONE set the whole item design
             mMovieImage = (ImageView) view.findViewById(R.id.image_iv);
             mTitleTextView = (TextView) view.findViewById(R.id.tv_movie_title);
             mPopularityTextView = (TextView) view.findViewById(R.id.tv_popularity);
@@ -95,7 +95,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
 
         @Override
         public void onClick(View view) {
-            // TODO implement movie click
+            // DONE implement movie click
             int clickedPosition = getAdapterPosition();
             mClickHandler.onClick(mMovies.movieList[clickedPosition].id);
         }

@@ -373,7 +373,7 @@ public final class MoviesJSONUtiles {
         attribute = BELONGS_TO_COLLECTION;
         if (movieDetailsJSON.has(attribute) && movieDetailsJSON.isNull(attribute) && movieDetailsJSON.getString(attribute ) != "null")
         {
-            // TODO get collection
+            // DONE get collection
             JSONObject collectionJSON = movieDetailsJSON.getJSONObject(attribute);
 
 
@@ -431,7 +431,7 @@ public final class MoviesJSONUtiles {
 
                 movieDetails.production_companies[i] = company;
             }
-            // TODO get compnaies
+            //  DONE companyes
         }
 
         attribute = SPOKEN_LANGUAGES;
@@ -455,7 +455,7 @@ public final class MoviesJSONUtiles {
 
                 movieDetails.spoken_languages[i] = lang;
             }
-            // TODO get lang
+            // DONE get lang
         }
 
         attribute = PRODUCTION_COUNTRIES;
@@ -484,7 +484,7 @@ public final class MoviesJSONUtiles {
         attribute = GENRES;
         if (movieDetailsJSON.has(attribute)&& !movieDetailsJSON.isNull(attribute) && movieDetailsJSON.getString(attribute ) != "null")
         {
-            // TODO get genres
+            // DONE get genres
             JSONArray genreJSONArray = movieDetailsJSON.getJSONArray(attribute);
 
             movieDetails.genres = new Genre[genreJSONArray.length()];

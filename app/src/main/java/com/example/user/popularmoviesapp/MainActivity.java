@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.user.popularmoviesapp.Utilities.MoviesContainer;
 import com.example.user.popularmoviesapp.Utilities.MoviesJSONUtiles;
@@ -23,6 +22,8 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
+
+import static com.example.user.popularmoviesapp.Utilities.NetworkUtilities.isOnline;
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler {
 
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
     @Override
     public void onClick(int movieId) {
-        // TODO call the details activity with movie id
+        // DONE call the details activity with movie id
         Context context = this;
         Class<DetailsActivity> destinationActivity = DetailsActivity.class;
 
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // TODO assign the adapter, recycler view ....
+        // DONE assign the adapter, recycler view ....
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies_view);
 
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
@@ -80,31 +81,40 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         pbLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
         currentSort = POPULAR;
-        // TODO work on paging
+        // DONE work on paging
         GetMovies(currentPageId,currentSort);
 
     }
 
     private void GetMovies(int pageId,String currentSort ) {
 
-        URL popularMoviesAPI = NetworkUtilities.popularMoviesURL(currentSort,currentPageId);
-        pbLoadingIndicator.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.INVISIBLE);
-
-        new MoviesTask().execute(popularMoviesAPI);
-
-
+        if (isOnline(this)) {
+            URL popularMoviesAPI = NetworkUtilities.popularMoviesURL(currentSort, currentPageId);
+            new MoviesTask().execute(popularMoviesAPI);
+        }
+        else
+        {
+            pbLoadingIndicator.setVisibility(View.INVISIBLE);
+            mRecyclerView.setVisibility(View.INVISIBLE);
+            mErrorMessageDisplay.setVisibility(View.VISIBLE);
+            mErrorMessageDisplay.setText(getResources().getString(R.string.no_intenet_connection));
+        }
     }
+
+
 
     public class MoviesTask extends AsyncTask<URL, Void, String> {
         @Override
         protected void onPreExecute() {
-            // TODO Add progress bar
+            // DONE Add progress bar
+            pbLoadingIndicator.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.INVISIBLE);
+            mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         }
 
         @Override
         protected String doInBackground(URL... urls) {
-            //TODO query the movies API
+            //DONE query the movies API
             if (urls == null || urls.length != 1)
                 return "";
             URL queryURL = urls[0];
@@ -113,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             String moviesResults = null;
             try {
                 moviesResults = NetworkUtilities.getResponseFromHttpUrl(queryURL);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -122,23 +133,29 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         @Override
         protected void onPostExecute(String moviesResults) {
             super.onPostExecute(moviesResults);
-            //TODO add the progress bar and check for errors
+            //DONE add the progress bar and check for errors
             pbLoadingIndicator.setVisibility(View.INVISIBLE);
-            mRecyclerView.setVisibility(View.VISIBLE);
+
 
             if (moviesResults != null && !moviesResults.equals("")) {
-                // TODO load the movies
+                // DONE load the movies
                 try {
                     MoviesContainer container = MoviesJSONUtiles.parseContainer(moviesResults);
 
                     totalPages = container.total_pages;
                     mMoviesAdapter.setMoviesData(container);
+                    mRecyclerView.setVisibility(View.VISIBLE);
 
                 } catch (JSONException e) {
+                    mErrorMessageDisplay.setVisibility(View.VISIBLE);
+                    mErrorMessageDisplay.setText(e.getMessage());
                     e.printStackTrace();
                 }
             } else {
-                //TODO manage errors
+                mErrorMessageDisplay.setVisibility(View.VISIBLE);
+                mErrorMessageDisplay.setText(getResources().getString(R.string.error_message));
+                //DONE manage errors
+
             }
 
         }

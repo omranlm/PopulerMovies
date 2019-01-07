@@ -6,7 +6,11 @@ import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.user.popularmoviesapp.Utilities.Genre;
@@ -19,6 +23,10 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static com.example.user.popularmoviesapp.Utilities.NetworkUtilities.isOnline;
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -34,7 +42,11 @@ public class DetailsActivity extends AppCompatActivity {
     TextView mMovieDetailsPopularityTextView;
     TextView mMovieDetailsOverviewTextView;
     TextView mMovieDetailsStatusTextView;
+    TextView mMovieDetailsOrgNameTextView;
+    TextView mMovieDetailsErrorTextView;
 
+    ProgressBar mDetailsLoadingPB;
+    ScrollView mDetailsLayoutSF;
     ImageView mMoviePoster;
 
     @Override
@@ -50,6 +62,10 @@ public class DetailsActivity extends AppCompatActivity {
         mMovieDetailsPopularityTextView = (TextView)findViewById(R.id.tv_movie_details_popularity);
         mMovieDetailsOverviewTextView = (TextView)findViewById(R.id.tv_movie_details_overview);
         mMovieDetailsStatusTextView = (TextView)findViewById(R.id.tv_movie_details_status);
+        mMovieDetailsOrgNameTextView = (TextView)findViewById(R.id.tv_movie_details_original_name);
+        mMovieDetailsErrorTextView = (TextView)findViewById(R.id.tv_details_error);
+        mDetailsLayoutSF = (ScrollView)findViewById(R.id.sv_details_layout);
+        mDetailsLoadingPB = (ProgressBar)findViewById(R.id.pb_details_loading);
 
         mMoviePoster = (ImageView) findViewById(R.id.iv_movie_poster);
 
@@ -58,12 +74,32 @@ public class DetailsActivity extends AppCompatActivity {
         if (detailsIntent.hasExtra(Intent.EXTRA_INDEX)) {
             movieId = detailsIntent.getIntExtra(Intent.EXTRA_INDEX, 0);
 
-            URL movieDetailsAPI = NetworkUtilities.MovieDetailsbyIdURL(movieId);
 
-            new MovieDetailsTask().execute(movieDetailsAPI);
+            loadDetails();
+
+
         } else {
-            // TODO log error that this movie id it invalid or connection error
+
+            Log.d(getResources().getString(R.string.no_extra),getResources().getString(R.string.error_message));
+            // DONE log error that this movie id it invalid or connection error
+
         }
+
+
+    }
+    private void loadDetails() {
+        if (isOnline(this)) {
+            URL movieDetailsAPI = NetworkUtilities.MovieDetailsbyIdURL(movieId);
+            new MovieDetailsTask().execute(movieDetailsAPI);
+        }
+        else
+        {
+            mDetailsLoadingPB.setVisibility(View.INVISIBLE);
+            mDetailsLayoutSF.setVisibility(View.INVISIBLE);
+            mMovieDetailsErrorTextView.setVisibility(View.VISIBLE);
+            mMovieDetailsErrorTextView.setText(getResources().getString(R.string.no_intenet_connection_details));
+        }
+
     }
 
     public class MovieDetailsTask extends AsyncTask<URL, Void, String> {
@@ -71,7 +107,10 @@ public class DetailsActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            // todo ADDA PROGRESS BAR
+            mMovieDetailsErrorTextView.setVisibility(View.INVISIBLE);
+            mDetailsLoadingPB.setVisibility(View.VISIBLE);
+            mDetailsLayoutSF.setVisibility(View.INVISIBLE);
+            //  DONE ADD PROGRESS BAR
         }
 
         @Override
@@ -85,6 +124,7 @@ public class DetailsActivity extends AppCompatActivity {
             try {
                 moviesDetailsResults = NetworkUtilities.getResponseFromHttpUrl(queryURL);
             } catch (IOException e) {
+                mMovieDetailsErrorTextView.setText(e.getMessage());
                 e.printStackTrace();
             }
             return moviesDetailsResults;
@@ -94,20 +134,31 @@ public class DetailsActivity extends AppCompatActivity {
         protected void onPostExecute(String movieDetailsResults) {
             super.onPostExecute(movieDetailsResults);
 
+
             if (movieDetailsResults != null && !movieDetailsResults.equals("")) {
-                // TODO parse & populate the details
+                // DONE parse & load the details
                 try {
                     MovieDetails movieDetails = MoviesJSONUtiles.parseMovieDetails(movieDetailsResults);
 
+                    mDetailsLoadingPB.setVisibility(View.INVISIBLE);
+                    mMovieDetailsErrorTextView.setVisibility(View.INVISIBLE);
+                    mDetailsLayoutSF.setVisibility(View.VISIBLE);
                     loadUI(movieDetails);
-
                 } catch (JSONException e) {
+                    mDetailsLoadingPB.setVisibility(View.INVISIBLE);
+                    mMovieDetailsErrorTextView.setText(e.getMessage());
+                    mMovieDetailsErrorTextView.setVisibility(View.VISIBLE);
                     // error parsing
+
                     e.printStackTrace();
+
                 }
 
             } else {
-                // error 
+                mDetailsLoadingPB.setVisibility(View.INVISIBLE);
+                mMovieDetailsErrorTextView.setText(getResources().getString(R.string.error_message));
+                mMovieDetailsErrorTextView.setVisibility(View.VISIBLE);
+                // error
             }
 
         }
@@ -128,6 +179,7 @@ public class DetailsActivity extends AppCompatActivity {
         mMovieDetailsOverviewTextView.setText(movieDetails.overview);
 
         mMovieDetailsStatusTextView.setText(movieDetails.status);
+        mMovieDetailsOrgNameTextView.setText(movieDetails.original_title);
 
         setTitle(getMovieTitle(movieDetails));
     }
