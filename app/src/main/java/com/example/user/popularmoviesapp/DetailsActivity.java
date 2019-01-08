@@ -1,9 +1,8 @@
 package com.example.user.popularmoviesapp;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,17 +22,14 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static com.example.user.popularmoviesapp.Utilities.NetworkUtilities.isOnline;
 
 public class DetailsActivity extends AppCompatActivity {
 
     private static final String UNKNOWN = "UNKNOWN";
-    int movieId;
+    private int movieId;
 
-    private String DATE_FORMAT_FULL = "dd MMMM yyyy";
     TextView mMovieHeadlineTextView;
 
     TextView mMovieDetailsVotesTextView;
@@ -55,7 +51,7 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
 
 
-        mMovieHeadlineTextView = (TextView)findViewById(R.id.tv_movie_info);
+        mMovieHeadlineTextView = findViewById(R.id.tv_movie_info);
         mMovieDetailsVotesTextView = (TextView)findViewById(R.id.tv_movie_details_votes);
         mMovieDetailsVotesAvgTextView = (TextView)findViewById(R.id.tc_details_votes_average);
         mMovieDetailsLangTextView= (TextView)findViewById(R.id.tv_movie_details_lang);
@@ -72,7 +68,9 @@ public class DetailsActivity extends AppCompatActivity {
         Intent detailsIntent = getIntent();
 
         if (detailsIntent.hasExtra(Intent.EXTRA_INDEX)) {
-            movieId = detailsIntent.getIntExtra(Intent.EXTRA_INDEX, 0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                movieId = detailsIntent.getIntExtra(Intent.EXTRA_INDEX, 0);
+            }
 
 
             loadDetails();
@@ -89,7 +87,7 @@ public class DetailsActivity extends AppCompatActivity {
     }
     private void loadDetails() {
         if (isOnline(this)) {
-            URL movieDetailsAPI = NetworkUtilities.MovieDetailsbyIdURL(movieId);
+            URL movieDetailsAPI = NetworkUtilities.MovieDetailsByIdURL(movieId);
             new MovieDetailsTask().execute(movieDetailsAPI);
         }
         else
@@ -97,12 +95,12 @@ public class DetailsActivity extends AppCompatActivity {
             mDetailsLoadingPB.setVisibility(View.INVISIBLE);
             mDetailsLayoutSF.setVisibility(View.INVISIBLE);
             mMovieDetailsErrorTextView.setVisibility(View.VISIBLE);
-            mMovieDetailsErrorTextView.setText(getResources().getString(R.string.no_intenet_connection_details));
+            mMovieDetailsErrorTextView.setText(getResources().getString(R.string.no_internet_connection_details));
         }
 
     }
 
-    public class MovieDetailsTask extends AsyncTask<URL, Void, String> {
+    private class MovieDetailsTask extends AsyncTask<URL, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -185,12 +183,12 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private String getLangs(MovieDetails movieDetails) {
-        String allLangs = "";
+        StringBuilder allLangs = new StringBuilder();
 
         for (int i = 0; i <movieDetails.spoken_languages.length; i++) {
-            allLangs +=  movieDetails.spoken_languages[i].name + ", ";
+            allLangs.append(movieDetails.spoken_languages[i].name).append(", ");
         }
-        if (allLangs =="")
+        if (allLangs.toString().equals(""))
             return UNKNOWN;
 
         return allLangs.substring(0,allLangs.length()-2);
@@ -198,14 +196,15 @@ public class DetailsActivity extends AppCompatActivity {
 
     private String getHeadline(MovieDetails movieDetails) {
 
+        String DATE_FORMAT_FULL = "dd MMMM yyyy";
         return movieDetails.runtime + " min | " + getGenre(movieDetails.genres) + " | " + android.text.format.DateFormat.format(DATE_FORMAT_FULL,movieDetails.release_date);
     }
 
     private String getGenre(Genre[] genres) {
         String allGenre = "";
 
-        for (int i = 0; i <genres.length; i++) {
-            allGenre +=  genres[i].name + ", ";
+        for (Genre genre : genres) {
+            allGenre += genre.name + ", ";
         }
 
         if (allGenre =="")

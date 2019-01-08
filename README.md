@@ -1,4 +1,4 @@
-# PopulerMovies
+# PopularMovies
 Project 1 for Udacity non degree Android Developer 
 
-Please remember to add your API key in NetworkUtilities class
+Please assign your API key in the NetworkUtilities.java line 26

@@ -15,15 +15,15 @@ import java.util.Scanner;
 public class NetworkUtilities {
 
 
-    final static String MOVIE_DETAILS_DB_API = "http://api.themoviedb.org/3/movie/";
+    private final static String MOVIE_DETAILS_DB_API = "http://api.themoviedb.org/3/movie/";
 
     final static String POPULAR_MOVIES_DB_API = "http://api.themoviedb.org/3/movie/";
 
     final public static  String MOVIES_POSTER = "http://image.tmdb.org/t/p/w185";
 
     final public static  String MOVIES_POSTER_W500 = "http://image.tmdb.org/t/p/w500";
-    // TODO (1): Remove key before submitting to Udacity
-    final static String MOVIES_DB_API_KEY ="none";
+    // DONE (1): Remove key before submitting to Udacity
+    final static String MOVIES_DB_API_KEY ="Please add your API key here";
 
     final static String API_KEY_STRING = "api_key";
 
@@ -65,7 +65,7 @@ public class NetworkUtilities {
 
     }
 
-    public static URL MovieDetailsbyIdURL(int movieId) {
+    public static URL MovieDetailsByIdURL(int movieId) {
         Uri builtUri = Uri.parse(MOVIE_DETAILS_DB_API).buildUpon()
                 .appendEncodedPath(String.valueOf(movieId))
                 .appendQueryParameter(API_KEY_STRING, MOVIES_DB_API_KEY)

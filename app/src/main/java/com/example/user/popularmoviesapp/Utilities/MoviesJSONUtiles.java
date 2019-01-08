@@ -11,7 +11,7 @@ import java.util.Date;
 
 public final class MoviesJSONUtiles {
 
-    static private String SUCCESS = "success";
+    static private final String SUCCESS = "success";
     static private String OWM_MESSAGE_CODE = "cod";
     public static MoviesContainer parseContainer(String moviesResults)  throws JSONException {
 
@@ -164,7 +164,7 @@ public final class MoviesJSONUtiles {
                 attribute = RELEASE_DATE;
                 if (movieJSON.has(attribute) && !movieJSON.isNull(attribute))
                 {
-                    movie.release_date =  getDatefromJSONString (movieJSON.getString(attribute));
+                    movie.release_date =  getDateFromJSONString (movieJSON.getString(attribute));
                 }
 
                 moviesContainer.movieList[i] = movie;
@@ -176,11 +176,9 @@ public final class MoviesJSONUtiles {
 
         return moviesContainer;
     }
-    private static Date getDatefromJSONString(String string) {
+    private static Date getDateFromJSONString(String string) {
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String dateString = format.format( new Date() );
-
+        SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT_IN_API);
         try {
             return format.parse (string);
         } catch (ParseException e) {
@@ -190,6 +188,7 @@ public final class MoviesJSONUtiles {
 
     }
 
+    static private String DATE_FORMAT_IN_API = "yyyy-MM-dd";
     static private String PAGE = "page";
     static private String TOTAL_RESULTS = "total_results";
     static private String TOTAL_PAGES = "total_pages";
@@ -320,7 +319,7 @@ public final class MoviesJSONUtiles {
         attribute = RELEASE_DATE;
         if (movieDetailsJSON.has(attribute) && !movieDetailsJSON.isNull(attribute))
         {
-            movieDetails.release_date = getDatefromJSONString (movieDetailsJSON.getString(attribute));
+            movieDetails.release_date = getDateFromJSONString (movieDetailsJSON.getString(attribute));
         }
 
         attribute = STATUS;
@@ -371,7 +370,7 @@ public final class MoviesJSONUtiles {
         }
 
         attribute = BELONGS_TO_COLLECTION;
-        if (movieDetailsJSON.has(attribute) && movieDetailsJSON.isNull(attribute) && movieDetailsJSON.getString(attribute ) != "null")
+        if (movieDetailsJSON.has(attribute) && movieDetailsJSON.isNull(attribute) && !movieDetailsJSON.getString(attribute).equals("null"))
         {
             // DONE get collection
             JSONObject collectionJSON = movieDetailsJSON.getJSONObject(attribute);

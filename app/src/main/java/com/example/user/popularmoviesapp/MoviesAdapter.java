@@ -14,13 +14,11 @@ import com.example.user.popularmoviesapp.Utilities.MoviesContainer;
 import com.example.user.popularmoviesapp.Utilities.NetworkUtilities;
 import com.squareup.picasso.Picasso;
 
-import java.nio.charset.Charset;
-
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdapterViewHolder>{
 
     private MoviesContainer mMovies;
 
-    private MoviesAdapterOnClickHandler mClickHandler;
+    private final MoviesAdapterOnClickHandler mClickHandler;
 
     private Context _context;
 
@@ -78,12 +76,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesAdap
         TextView mReleaseDate;
 
         private CharSequence DATE_FORMAT = "dd MMM yyyy";
-        public MoviesAdapterViewHolder (View view)
+        MoviesAdapterViewHolder(View view)
         {
             super(view);
 
             // DONE set the whole item design
-            mMovieImage = (ImageView) view.findViewById(R.id.image_iv);
+            mMovieImage = view.findViewById(R.id.image_iv);
             mTitleTextView = (TextView) view.findViewById(R.id.tv_movie_title);
             mPopularityTextView = (TextView) view.findViewById(R.id.tv_popularity);
             mVoteTextView = (TextView) view.findViewById(R.id.tv_votes);

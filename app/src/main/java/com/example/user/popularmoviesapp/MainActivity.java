@@ -3,6 +3,7 @@ package com.example.user.popularmoviesapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     private ProgressBar pbLoadingIndicator;
 
     private Menu mainMenu;
-    int currentPageId = 1;
+    private int currentPageId = 1;
 
     final static String TOP_RATED = "top_rated";
     final static String POPULAR = "popular";
@@ -53,7 +54,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         Class<DetailsActivity> destinationActivity = DetailsActivity.class;
 
         Intent intent = new Intent(MainActivity.this,destinationActivity);
-        intent.putExtra(Intent.EXTRA_INDEX,movieId);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.putExtra(Intent.EXTRA_INDEX,movieId);
+        }
 
         startActivity(intent);
     }
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         setContentView(R.layout.activity_main);
 
         // DONE assign the adapter, recycler view ....
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies_view);
+        mRecyclerView = findViewById(R.id.rv_movies_view);
 
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
@@ -82,11 +85,11 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
         currentSort = POPULAR;
         // DONE work on paging
-        GetMovies(currentPageId,currentSort);
+        GetMovies(currentSort);
 
     }
 
-    private void GetMovies(int pageId,String currentSort ) {
+    private void GetMovies(String currentSort) {
 
         if (isOnline(this)) {
             URL popularMoviesAPI = NetworkUtilities.popularMoviesURL(currentSort, currentPageId);
@@ -97,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             pbLoadingIndicator.setVisibility(View.INVISIBLE);
             mRecyclerView.setVisibility(View.INVISIBLE);
             mErrorMessageDisplay.setVisibility(View.VISIBLE);
-            mErrorMessageDisplay.setText(getResources().getString(R.string.no_intenet_connection));
+            mErrorMessageDisplay.setText(getResources().getString(R.string.no_internet_connection));
         }
     }
 
@@ -182,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             page.setTitle(String.valueOf(currentPageId));
 
             manageMenu();
-            GetMovies(currentPageId,currentSort);
+            GetMovies(currentSort);
             return true;
         }
         if (id == R.id.action_previous) {
@@ -191,18 +194,18 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             MenuItem page = mainMenu.findItem(R.id.page);
             page.setTitle(String.valueOf(currentPageId));
             manageMenu();
-            GetMovies(currentPageId,currentSort);
+            GetMovies(currentSort);
             return true;
         }
         if (id == R.id.action_sort_by_popular)
         {
             currentSort = POPULAR;
-            GetMovies(currentPageId,currentSort);
+            GetMovies(currentSort);
         }
         if (id == R.id.action_sort_by_top_rated)
         {
             currentSort = TOP_RATED;
-            GetMovies(currentPageId,currentSort);
+            GetMovies(currentSort);
         }
         return super.onOptionsItemSelected(item);
     }
