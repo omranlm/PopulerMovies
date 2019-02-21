@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -63,7 +62,7 @@ public class DetailActivity extends AppCompatActivity implements
     private int movieId;
 
     private ActivityDetailBinding mDetailBinding;
-    MovieDetails movieDetails;
+    private MovieDetails movieDetails;
     private RecyclerView mReviewRecyclerView;
     private ReviewAdapter mReviewApapter;
 
@@ -72,6 +71,7 @@ public class DetailActivity extends AppCompatActivity implements
 
     //ProgressBar mDetailsLoadingPB;
     private AppDatabase mDB;
+    private String YOUTUBE_PREFIX="http://www.youtube.com/watch?v=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -256,7 +256,7 @@ public class DetailActivity extends AppCompatActivity implements
         // Code reference : https://stackoverflow.com/questions/574195/android-youtube-app-play-video-intent
         Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + video.key));
         Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("http://www.youtube.com/watch?v=" + video.key));
+                Uri.parse(YOUTUBE_PREFIX + video.key));
         try {
             startActivity(appIntent);
         } catch (ActivityNotFoundException ex) {
@@ -421,7 +421,7 @@ public class DetailActivity extends AppCompatActivity implements
             allGenre += genre.name + ", ";
         }
 
-        if (allGenre == "")
+        if (allGenre.equals(""))
             return UNKNOWN;
         return allGenre.substring(0, allGenre.length() - 2);
     }

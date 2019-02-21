@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.user.popularmoviesapp.Utilities.Reviews;
-import com.example.user.popularmoviesapp.Utilities.Videos;
 
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapterViewHolder>
@@ -63,7 +62,7 @@ class ReviewAdapterViewHolder extends RecyclerView.ViewHolder {
     ImageView mSwipLeft;
 
     Reviews mReview;
-    private String READ_MORE ="Read more on ";
+    private static String READ_MORE ="Read more on ";
 
     public ReviewAdapterViewHolder(@NonNull View itemView, Reviews reviews) {
         super(itemView);

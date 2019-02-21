@@ -18,7 +18,7 @@ public class FavoriteViewModel extends AndroidViewModel {
         super(application);
 
         AppDatabase db = AppDatabase.getInstance(this.getApplication());
-        Log.d(FavoriteViewModel.class.getSimpleName(),"Get Favorite movies though Room");
+
         favorites = db.taskDao().loadAllFav();
 
     }

@@ -24,5 +24,7 @@
     <string name="favorite_activity">Favorite Movies</string>
     <string name="no_reviews">No Reviews</string>
     <string name="no_trailers">No Trailers</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
 
 </resources>

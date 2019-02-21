@@ -1,6 +1,6 @@
 package com.example.user.popularmoviesapp;
 
-import android.content.Context;
+
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
