@@ -14,6 +14,10 @@ public class MovieDetails extends Movie{
     public String tagline;
     public Genre[] genres;
     public Collection belongs_to_collection;
+    public boolean video;
+
+    public Videos [] videos;
+    public Reviews [] reviews;
 
     public MovieDetails ()
     {}
@@ -39,4 +43,6 @@ class Country {
     public String iso_3166_1;
     public String name;
 }
+
+
 

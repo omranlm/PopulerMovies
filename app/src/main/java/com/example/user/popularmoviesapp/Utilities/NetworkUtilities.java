@@ -23,11 +23,16 @@ public class NetworkUtilities {
 
     final public static  String MOVIES_POSTER_W500 = "http://image.tmdb.org/t/p/w500";
     // DONE (1): Remove key before submitting to Udacity
-    final static String MOVIES_DB_API_KEY ="Please add your API key here";
+    final static String MOVIES_DB_API_KEY ="";
 
     final static String API_KEY_STRING = "api_key";
 
     final static String PAGE_QUERY_PARAM = "page";
+    private static final String MOVIE_TRAILER_END_POINT = "videos";
+
+    private static final String MOVIE_REVIEWS_END_POINT = "reviews";
+    private static final String WHAT_TO_APPEND = "videos,reviews";
+    private static final String APPEND_TO_RESPONSE = "append_to_response" ;
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         // recalled this from other Udacity exercises
@@ -65,10 +70,11 @@ public class NetworkUtilities {
 
     }
 
-    public static URL MovieDetailsByIdURL(int movieId) {
+    public static URL movieDetailsByIdURL(int movieId) {
         Uri builtUri = Uri.parse(MOVIE_DETAILS_DB_API).buildUpon()
                 .appendEncodedPath(String.valueOf(movieId))
                 .appendQueryParameter(API_KEY_STRING, MOVIES_DB_API_KEY)
+                .appendQueryParameter(APPEND_TO_RESPONSE,WHAT_TO_APPEND)
                 .build();
 
         URL url = null;
@@ -87,5 +93,40 @@ public class NetworkUtilities {
 
         return cm.getActiveNetworkInfo() != null &&
                 cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
+    public static URL movieTrailersByIdURL(int movieId) {
+        Uri builtUri = Uri.parse(MOVIE_DETAILS_DB_API).buildUpon()
+                .appendEncodedPath(String.valueOf(movieId))
+                .appendEncodedPath(MOVIE_TRAILER_END_POINT)
+                .appendQueryParameter(API_KEY_STRING, MOVIES_DB_API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+
+    }
+
+    public static URL movieReviewsByIdURL(int movieId) {
+        Uri builtUri = Uri.parse(MOVIE_DETAILS_DB_API).buildUpon()
+                .appendEncodedPath(String.valueOf(movieId))
+                .appendEncodedPath(MOVIE_REVIEWS_END_POINT)
+                .appendQueryParameter(API_KEY_STRING, MOVIES_DB_API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
     }
 }

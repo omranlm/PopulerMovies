@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -47,15 +47,16 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
     int totalPages;
 
+
     @Override
     public void onClick(int movieId) {
-        // DONE call the details activity with movie id
-        Context context = this;
-        Class<DetailsActivity> destinationActivity = DetailsActivity.class;
 
-        Intent intent = new Intent(MainActivity.this,destinationActivity);
+
+        Class<DetailActivity> destinationActivity = DetailActivity.class;
+
+        Intent intent = new Intent(MainActivity.this, destinationActivity);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.putExtra(Intent.EXTRA_INDEX,movieId);
+            intent.putExtra(Intent.EXTRA_INDEX, movieId);
         }
 
         startActivity(intent);
@@ -94,16 +95,13 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         if (isOnline(this)) {
             URL popularMoviesAPI = NetworkUtilities.popularMoviesURL(currentSort, currentPageId);
             new MoviesTask().execute(popularMoviesAPI);
-        }
-        else
-        {
+        } else {
             pbLoadingIndicator.setVisibility(View.INVISIBLE);
             mRecyclerView.setVisibility(View.INVISIBLE);
             mErrorMessageDisplay.setVisibility(View.VISIBLE);
             mErrorMessageDisplay.setText(getResources().getString(R.string.no_internet_connection));
         }
     }
-
 
 
     public class MoviesTask extends AsyncTask<URL, Void, String> {
@@ -197,15 +195,21 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
             GetMovies(currentSort);
             return true;
         }
-        if (id == R.id.action_sort_by_popular)
-        {
+        if (id == R.id.action_sort_by_popular) {
             currentSort = POPULAR;
             GetMovies(currentSort);
         }
-        if (id == R.id.action_sort_by_top_rated)
-        {
+        if (id == R.id.action_sort_by_top_rated) {
             currentSort = TOP_RATED;
             GetMovies(currentSort);
+        }
+        if (id == R.id.action_show_favorite) {
+            // TODO navigate to favorite list
+
+            Class<FavoriteActivity> destinationActivity = FavoriteActivity.class;
+            Intent intent = new Intent(MainActivity.this, destinationActivity);
+            startActivity(intent);
+
         }
         return super.onOptionsItemSelected(item);
     }

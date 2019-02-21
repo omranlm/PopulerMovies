@@ -12,6 +12,14 @@ import java.util.Date;
 public final class MoviesJSONUtiles {
 
     static private final String SUCCESS = "success";
+    private static final String TRAILERS ="videos" ;
+    private static final String SITE = "site";
+    private static final String SIZE = "size";
+    private static final String TYPE = "type";
+    private static final String REVIEWS = "reviews";
+    private static final String AUTHOR = "author";
+    private static final String CONTENT = "content";
+    private static final String URL = "url";
     static private String OWM_MESSAGE_CODE = "cod";
     public static MoviesContainer parseContainer(String moviesResults)  throws JSONException {
 
@@ -224,6 +232,7 @@ public final class MoviesJSONUtiles {
     static private String ISO_3166_1 = "iso_3166_1";
     static private String LOGO_PATH = "logo_path";
     static private String ORIGIN_COUNTRY = "origin_country";
+    static private String KEY = "key";
 
     public static MovieDetails parseMovieDetails(String movieDetailsResults) throws JSONException{
 
@@ -363,10 +372,11 @@ public final class MoviesJSONUtiles {
             movieDetails.status = movieDetailsJSON.getString(attribute);
         }
 
-        attribute = TAGLINE;
+
+        attribute = VIDEO;
         if (movieDetailsJSON.has(attribute) && !movieDetailsJSON.isNull(attribute))
         {
-            movieDetails.tagline = movieDetailsJSON.getString(attribute);
+            movieDetails.video = movieDetailsJSON.getBoolean(attribute);
         }
 
         attribute = BELONGS_TO_COLLECTION;
@@ -501,6 +511,96 @@ public final class MoviesJSONUtiles {
                 }
 
                 movieDetails.genres[i] = genre;
+            }
+        }
+        attribute = TRAILERS;
+        if (movieDetailsJSON.has(attribute)&& !movieDetailsJSON.isNull(attribute) && movieDetailsJSON.getString(attribute ) != "null")
+        {
+            JSONObject trailerJSONObject = movieDetailsJSON.getJSONObject(attribute);
+
+            if (trailerJSONObject.has(RESULTS))
+            {
+                JSONArray trailerJSONArray = trailerJSONObject.getJSONArray(RESULTS);
+
+                movieDetails.videos = new Videos[trailerJSONArray.length()];
+                for (int i = 0; i < trailerJSONArray.length(); i++) {
+
+                    JSONObject trailer = trailerJSONArray.getJSONObject(i);
+
+                    movieDetails.videos[i] = new Videos();
+                    // TODO parse trailer object
+                    attribute = ID;
+                    if (trailer.has(attribute) && !trailer.isNull(attribute))
+                    {
+                        movieDetails.videos[i].id = trailer.getString(attribute);
+                    }
+
+                    attribute = KEY;
+                    if (trailer.has(attribute) && !trailer.isNull(attribute))
+                    {
+                        movieDetails.videos[i].key = trailer.getString(attribute);
+                    }
+                    attribute = NAME;
+                    if (trailer.has(attribute) && !trailer.isNull(attribute))
+                    {
+                        movieDetails.videos[i].name = trailer.getString(attribute);
+                    }
+                    attribute = SITE;
+                    if (trailer.has(attribute) && !trailer.isNull(attribute))
+                    {
+                        movieDetails.videos[i].site = trailer.getString(attribute);
+                    }
+                    attribute = SIZE;
+                    if (trailer.has(attribute) && !trailer.isNull(attribute))
+                    {
+                        movieDetails.videos[i].size = trailer.getInt(attribute);
+                    }
+                    attribute = TYPE;
+                    if (trailer.has(attribute) && !trailer.isNull(attribute))
+                    {
+                        movieDetails.videos[i].type = trailer.getString(attribute);
+                    }
+                    ///
+
+                }
+            }
+
+        }
+
+        attribute = REVIEWS;
+        if (movieDetailsJSON.has(attribute)&& !movieDetailsJSON.isNull(attribute) && movieDetailsJSON.getString(attribute ) != "null")
+        {
+            JSONObject reviewsJSONObject = movieDetailsJSON.getJSONObject(attribute);
+
+            if (reviewsJSONObject.has(RESULTS))
+            {
+                JSONArray reviewsJSONArray = reviewsJSONObject.getJSONArray(RESULTS);
+
+                movieDetails.reviews = new Reviews[reviewsJSONArray.length()];
+
+                for (int i = 0; i < reviewsJSONArray.length(); i++) {
+
+                    JSONObject review = reviewsJSONArray.getJSONObject(i);
+
+                    movieDetails.reviews[i] = new Reviews();
+
+                    attribute = AUTHOR;
+                    if (review.has(attribute) && !review.isNull(attribute))
+                    {
+                        movieDetails.reviews[i].author = review.getString(attribute);
+                    }
+                    attribute = CONTENT;
+                    if (review.has(attribute) && !review.isNull(attribute))
+                    {
+                        movieDetails.reviews[i].content = review.getString(attribute);
+                    }
+
+                    attribute = URL;
+                    if (review.has(attribute) && !review.isNull(attribute))
+                    {
+                        movieDetails.reviews[i].url = review.getString(attribute);
+                    }
+                }
             }
         }
 

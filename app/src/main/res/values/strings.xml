@@ -17,5 +17,12 @@
     <string name="no_internet_connection_details">Ops, I knew that you\'re coming here :) \n It looks like you\'re not connected to the internet. Please check the connection and click back</string>
     <string name="image_content_description">Movie Poster</string>
     <string name="separator">|</string>
+    <string name="trailers">Trailers</string>
+    <string name="view_trailers">View all trailers</string>
+    <string name="reviews">Reviews</string>
+    <string name="show_favorite">Favorite Movies</string>
+    <string name="favorite_activity">Favorite Movies</string>
+    <string name="no_reviews">No Reviews</string>
+    <string name="no_trailers">No Trailers</string>
 
 </resources>
